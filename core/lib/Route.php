@@ -1,6 +1,8 @@
 <?php
 namespace Core\Lib;
 
+use Core\Exceptions\NotFoundException;
+
 class Route{
   private static $url;
 
@@ -20,7 +22,7 @@ class Route{
     }
 
     if( !$isRouteFound ){
-      die('Page not found');
+      throw new NotFoundException();
     }
 
     list($ctrlName, $methodName) = $controllerAndMethod;

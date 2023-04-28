@@ -3,14 +3,17 @@
 namespace Core\Controllers;
 
 use Core\Lib\View;
+use Core\Models\Category;
+use Core\Models\News;
 
 class MainController
 {
   public function index(): void
   {
-    $title = 'Home Page';
-    $content = 'Content';
-    View::render('home', compact('title', 'content'));
+    $news = News::all();
+    $categories = Category::all();
+
+    View::render('home', compact('news', 'categories'));
   }
 
   public function contacts(): void
@@ -20,7 +23,8 @@ class MainController
 
   public function news(int $id): void
   {
-    echo $id;
+    $new = News::findOrFail($id);
+    View::render('new', compact('new'));
   }
 }
 
