@@ -2,6 +2,7 @@
 namespace Core\Models;
 
 class News extends Model{
+  public $id;
   public $title;
   public $content;
   public $category_id;

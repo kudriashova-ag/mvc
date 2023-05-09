@@ -16,7 +16,7 @@ abstract class Model{
   public static function find($id)
   {
     $db = Db::getInstance();
-    $result = $db->query('select * from ' . static::getTable() . ' where id=?', [$id], static::class);
+    $result = $db->query('select * from ' . static::getTable() . ' where id=:id', ['id'=>$id], static::class);
     return $result ? $result[0] : null;
   }
 
@@ -28,6 +28,39 @@ abstract class Model{
     }
     return $item;
   }
+
+  public function save()
+  {
+    $db = Db::getInstance();
+
+    $reflection = new \ReflectionObject($this);
+    $properties = $reflection->getProperties();
+
+    $props = [];
+    $propsToUpdate = [];
+    foreach($properties as $p){
+      $name = $p->name;
+      $props[$name] = $this->$name;
+      $propsToUpdate[] = $name . '=:' . $name;
+    }
+    if($this->id){
+      $sql = 'UPDATE ' . static::getTable() . ' SET ' . implode(', ', $propsToUpdate) . ' WHERE id=:id' ;
+      $db->query($sql, $props);
+    }
+    else{
+      $sql = 'INSERT INTO ' . static::getTable() . '('. implode(', ', array_keys($props)) .') VALUES (:' . implode(', :', array_keys($props)) . ')';
+      $db->query($sql, $props);
+    }
+  }
+
+
+  public function remove()
+  {
+    $db = Db::getInstance();
+    $db->query('delete from ' . static::getTable() . ' where id=:id', ['id' => $this->id], static::class);
+  }
+
+
 
 
   abstract public static function getTable();

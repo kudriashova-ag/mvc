@@ -6,7 +6,7 @@ use Core\Lib\View;
 use Core\Models\Category;
 use Core\Models\News;
 
-class MainController
+class MainController extends Controller
 {
   public function index(): void
   {
